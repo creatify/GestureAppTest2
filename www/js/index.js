@@ -55,7 +55,6 @@ function setupGestures() {
 
 // HANDLE ON TAP
 function handleTap(ev) {
-	ev.gesture.preventDefault();
 	console.log("ON TAP: "+ev.type);
 	tf.innerHTML = "TAP!";
 };
