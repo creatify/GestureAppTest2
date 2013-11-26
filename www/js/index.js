@@ -5,12 +5,22 @@ var disToFire = 20;
 var circ = null;
 var hammertime = null;
 var tf = null;
+var tfSock = null;
 var firstRun = true;
 var firstRunWin = true;
+var pmpSocket = null;
+
+
+// These are the strings to send over the socket to the PMP middleware
+var commandStrings = 		[];
+commandStrings["up"] = 		"up-----\0";
+commandStrings["left"] = 	"left---\0";
+commandStrings["enter"] = 	"enter--\0";
+commandStrings["right"] = 	"right--\0";
+commandStrings["down"] = 	"down---\0";
 
 // ON WINDOW READY
 window.addEventListener('load', onWindowReady, false);
-
 function onWindowReady() {
 	if (firstRunWin) {
 		firstRunWin = false;
@@ -36,7 +46,8 @@ function setupGestures() {
 
 	circ = document.getElementById('circle');
 	tf = document.getElementById("textoutputid");
-	// tf.innerHTML = "READY";
+	tf.innerHTML = "READY";
+	tfSock = document.getElementById("textoutputsocketid");
 	if (!hammertime) {
 		hammertime = Hammer(document.getElementById("toucharea"));
 	} else {
@@ -54,13 +65,13 @@ function setupGestures() {
 // HANDLE ON TAP
 function handleTap(ev) {
 	console.log("ON TAP: " + ev.type);
-	// tf.innerHTML = "TAP!";
+	tf.innerHTML = "TAP!";
 };
 
 // HANDLE DRAG START
 function handleDragStart(ev) {
 	ev.gesture.preventDefault();
-	// tf.innerHTML = "START!";
+	tf.innerHTML = "START DRAG";
 	console.log("START!!!!!!!!!");
 	mXP = ev.gesture.center.pageX;
 	mYP = ev.gesture.center.pageY;
@@ -69,7 +80,7 @@ function handleDragStart(ev) {
 // HANDLE DRAG END
 function handleDragEnd(ev) {
 	ev.gesture.preventDefault();
-	// tf.innerHTML = "STOP!";
+	tf.innerHTML = "STOP DRAG";
 	console.log("STOP!!!!!!!!!");
 };
 
@@ -89,7 +100,7 @@ function handleDrag(ev) {
 		} else {
 			dir = "LEFT";
 		}
-		// tf.innerHTML = dir;
+		tf.innerHTML = dir;
 		mXP = ev.gesture.center.pageX;
 	}
 
@@ -99,29 +110,33 @@ function handleDrag(ev) {
 		} else {
 			dir = "UP";
 		}
-		// tf.innerHTML = dir;
+		tf.innerHTML = dir;
 		mYP = ev.gesture.center.pageY;
 	}
 };
-var pmpSocket = null;
-function setUpSocket() {
-	var pmpSocket = new WebSocket('ws://172.16.22.18:5556');
+
+// SET UP WEB SOCKET
+function setupSocket() {
+	
+	tfSock.innerHTML = "setupSocket()";
+	
+	pmpSocket = new WebSocket('ws://172.16.22.18:5556');
 
 	pmpSocket.onopen = function() {
-		tf.innerHTML = "SOCKET OPEN";
-		pmpSocket.send("enter--");
+		tfSock.innerHTML = "SOCKET OPEN";
+		// ​var array = new Uint8Array(new ArrayBuffer(commandStrings["enter"]));	pmpSocket.send(array.buffer);
 	};
 
 	pmpSocket.onclose = function() {
-		tf.innerHTML = "SOCKET CLOSED";
+		tfSock.innerHTML = "SOCKET CLOSED";
 		console.log('Connection closed');
 	};
 
 	pmpSocket.onerror = function(error) {
-		tf.innerHTML = "SOCKET ERROR: " + error;
+		tfSock.innerHTML = "SOCKET ERROR: " + error;
 	};
 
 	pmpSocket.onmessage = function(msg) {
-		tf.innerHTML = "ON MSG: " + msg;
+		tfSock.innerHTML = "ON MSG: " + msg;
 	};
 };
