@@ -66,6 +66,7 @@ function setupGestures() {
 function handleTap(ev) {
 	console.log("ON TAP: " + ev.type);
 	tf.innerHTML = "TAP!";
+	sendToSocket(commandStrings["enter"]);
 };
 
 // HANDLE DRAG START
@@ -97,8 +98,10 @@ function handleDrag(ev) {
 	if (Math.abs(tempXP - mXP) >= disToFire) {
 		if (tempXP - mXP >= 0) {
 			dir = "RIGHT";
+			sendToSocket(commandStrings["right"]);
 		} else {
 			dir = "LEFT";
+			sendToSocket(commandStrings["left"]);
 		}
 		tf.innerHTML = dir;
 		mXP = ev.gesture.center.pageX;
@@ -107,8 +110,10 @@ function handleDrag(ev) {
 	if (Math.abs(tempYP - mYP) >= disToFire) {
 		if (tempYP - mYP >= 0) {
 			dir = "DOWN";
+			sendToSocket(commandStrings["down"]);
 		} else {
 			dir = "UP";
+			sendToSocket(commandStrings["up"]);
 		}
 		tf.innerHTML = dir;
 		mYP = ev.gesture.center.pageY;
@@ -124,8 +129,6 @@ function setupSocket() {
 
 	pmpSocket.onopen = function() {
 		tfSock.innerHTML = "SOCKET OPEN";
-		var binary = toUTF8Array(commandStrings["enter"]);
-		pmpSocket.send(binary.buffer);
 	};
 
 	pmpSocket.onclose = function() {
@@ -141,6 +144,11 @@ function setupSocket() {
 		tfSock.innerHTML = "ON MSG: " + msg;
 	};
 };
+
+function sendToSocket(str) {
+	var binary = toUTF8Array(str);
+	pmpSocket.send(binary.buffer);	
+}
 
 function toUTF8Array(str) {
     var utf8 = [];
@@ -171,7 +179,7 @@ function toUTF8Array(str) {
         }
     }
     // add one last empty bit to the array
-    utf8.push("\0");
+    utf8.push(0x00);
     
     return utf8;
 };
