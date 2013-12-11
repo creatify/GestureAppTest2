@@ -35,6 +35,16 @@ function onWindowReady() {
 	}
 }
 
+// LOAD SCRIPT FUNCTION FROM SOCKET TUTORIAL
+function loadScript(url, callback) {
+	var head = document.getElementsByTagName('head')[0];
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = url;
+	script.onload = callback;
+	head.appendChild(script);
+}
+
 // ON DEVICE READY
 function onDeviceReady() {
 
@@ -129,25 +139,42 @@ function handleDrag(ev) {
 
 // SET UP WEB SOCKET
 function setupSocket() {
-	tfSock.innerHTML = "Set up socket.";
+	tfSock.innerHTML = "";
 
-	pmpSocket = new GapSocket("172.16.20.47", "5556");
+	loadScript('js/socket.io.js', function() {
 
-	pmpSocket.onopen = function() {
-		tfSock.innerHTML = "Socket open.";
-	};
+		pmpSocket = io.connect(localSocketIP);
 
-	pmpSocket.onmessage = function(msg) {
-		tfSock.innerHTML = "Socket message = " + msg + ".";
-	};
+		tfSock.innerHTML = "connecting";
+		
+		pmpSocket.on('ping', function(data) {
+			tfSock.innerHTML = data.message;
+			/*
+			pmpSocket.emit('pong', {
+				message : 'Hello from client!'
+			});*/
+		});
 
-	pmpSocket.onerror = function(msg) {
-		tfSock.innerHTML = "Socket error = " + msg + ".";
-	};
+		pmpSocket.on('connect', function() {
+			tfSock.innerHTML = "connected";
+		});
 
-	pmpSocket.onclose = function() {
-		tfSock.innerHTML = "Socket closed.";
-	};
+		pmpSocket.on('reconnect', function() {
+			tfSock.innerHTML = "reconnected";
+		});
+
+		pmpSocket.on('disconnect', function() {
+			tfSock.innerHTML = "disconnected";
+		});
+
+		pmpSocket.on('reconnecting', function() {
+			tfSock.innerHTML = "reconnecting...";
+		});
+
+		pmpSocket.on('error', function() {
+			tfSock.innerHTML = "error";
+		});
+	});
 
 };
 
