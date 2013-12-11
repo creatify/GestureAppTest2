@@ -10,7 +10,8 @@ var firstRun = true;
 var firstRunWin = true;
 var pmpSocket = null;
 var localSocketIP = "http://10.0.2.2:8080";
-var pmpSocketIP = "172.16.22.18:5556";
+// var pmpSocketIP = "172.16.22.18:5556";
+var pmpSocketIP = "172.16.20.47:5556";
 
 // These are the strings to send over the socket to the PMP middleware
 var commandStrings = [];
@@ -142,15 +143,16 @@ function setupSocket() {
 
 	loadScript('js/socket.io.js', function() {
 
-		pmpSocket = io.connect(localSocketIP);
+		pmpSocket = io.connect(pmpSocketIP);
 
 		tfSock.innerHTML = "connecting";
-
+		
 		pmpSocket.on('ping', function(data) {
 			tfSock.innerHTML = data.message;
+			/*
 			pmpSocket.emit('pong', {
 				message : 'Hello from client!'
-			});
+			});*/
 		});
 
 		pmpSocket.on('connect', function() {
