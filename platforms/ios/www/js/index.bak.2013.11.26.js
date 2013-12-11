@@ -21,17 +21,12 @@ commandStrings["down"] = 	"down---";
 
 // ON WINDOW READY
 window.addEventListener('load', onWindowReady, false);
-
 function onWindowReady() {
-	document.body.addEventListener('touchmove', function(e) { 
-		e.preventDefault();
-    }, false);
-    
 	if (firstRunWin) {
 		firstRunWin = false;
 		document.addEventListener("deviceready", onDeviceReady, false);
 	}
-	
+
 }
 
 // ON DEVICE READY
@@ -49,13 +44,12 @@ function onDeviceReady() {
 // SET UP GESTURES
 function setupGestures() {
 
-	// circ = document.getElementById('circle');
+	circ = document.getElementById('circle');
 	tf = document.getElementById("textoutputid");
 	tf.innerHTML = "READY";
 	tfSock = document.getElementById("textoutputsocketid");
 	if (!hammertime) {
-		// hammertime = Hammer(document.getElementById("toucharea"));
-		hammertime = Hammer(document.body);
+		hammertime = Hammer(document.getElementById("toucharea"));
 	} else {
 		return;
 	}
@@ -78,7 +72,7 @@ function handleTap(ev) {
 // HANDLE DRAG START
 function handleDragStart(ev) {
 	ev.gesture.preventDefault();
-	// tf.innerHTML = "START DRAG";
+	tf.innerHTML = "START DRAG";
 	console.log("START!!!!!!!!!");
 	mXP = ev.gesture.center.pageX;
 	mYP = ev.gesture.center.pageY;
@@ -87,7 +81,7 @@ function handleDragStart(ev) {
 // HANDLE DRAG END
 function handleDragEnd(ev) {
 	ev.gesture.preventDefault();
-	// tf.innerHTML = "STOP DRAG";
+	tf.innerHTML = "STOP DRAG";
 	console.log("STOP!!!!!!!!!");
 };
 
@@ -98,8 +92,8 @@ function handleDrag(ev) {
 	var tempXP = ev.gesture.center.pageX;
 	var tempYP = ev.gesture.center.pageY;
 
-	// circ.style.left = (tempXP - 10) + "px";
-	// circ.style.top = (tempYP - 10) + "px";
+	circ.style.left = (tempXP - 10) + "px";
+	circ.style.top = (tempYP - 10) + "px";
 
 	if (Math.abs(tempXP - mXP) >= disToFire) {
 		if (tempXP - mXP >= 0) {
@@ -128,8 +122,7 @@ function handleDrag(ev) {
 
 // SET UP WEB SOCKET
 function setupSocket() {
-	tfSock.innerHTML = "";
-	/*
+	
 	tfSock.innerHTML = "setupSocket()";
 	
 	pmpSocket = new WebSocket('ws://172.16.22.18:5556');
@@ -150,16 +143,13 @@ function setupSocket() {
 	pmpSocket.onmessage = function(msg) {
 		tfSock.innerHTML = "ON MSG: " + msg;
 	};
-	*/
 };
 
-// SEND BINARY TO SOCKET
 function sendToSocket(str) {
-	// var binary = toUTF8Array(str);
-	// pmpSocket.send(binary.buffer);	
+	var binary = toUTF8Array(str);
+	pmpSocket.send(binary.buffer);	
 }
 
-// CONVERT STRING TO UTF8 ARRAY
 function toUTF8Array(str) {
     var utf8 = [];
     for (var i=0; i < str.length; i++) {
