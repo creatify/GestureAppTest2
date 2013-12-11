@@ -10,7 +10,8 @@ var firstRun = true;
 var firstRunWin = true;
 var pmpSocket = null;
 var localSocketIP = "http://10.0.2.2:8080";
-var pmpSocketIP = "172.16.22.18:5556";
+// var pmpSocketIP = "172.16.22.18:5556";
+var pmpSocketIP = "172.16.20.47:5556";
 
 // These are the strings to send over the socket to the PMP middleware
 var commandStrings = [];
