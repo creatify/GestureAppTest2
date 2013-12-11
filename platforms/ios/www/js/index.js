@@ -154,7 +154,9 @@ function setupSocket() {
 // SEND BINARY TO SOCKET
 function sendToSocket(str) {
 	var binary = toUTF8Array(str);
-	pmpSocket.send(binary.buffer);
+	if(pmpSocket) {
+		pmpSocket.send(binary.buffer);		
+	}
 }
 
 // CONVERT STRING TO UTF8 ARRAY
